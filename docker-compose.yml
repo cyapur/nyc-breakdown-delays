@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+      image: postgres:15.3
+      environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: admin
+        POSTGRES_DB: postgres_db
+  airflow:
+    build: ./airflow
+    command: >
+      bash -c "
+        airflow db init && 
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+        airflow webserver
+      "
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+    ports:
+      - 8080:8080
+    links:
+      - postgres
+    depends_on:
+      - postgres

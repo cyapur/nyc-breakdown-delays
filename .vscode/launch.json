@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Airflow Test",
+        "type": "python",
+        "request": "launch",
+        "program": "/usr/local/bin/airflow",
+        "args": ["tasks", "test", "my_sample_dag", "my_sample_dag", "2021-01-01"],
+        "console": "integratedTerminal"
+      }
+    ]
+  }

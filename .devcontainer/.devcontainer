@@ -1,0 +1,7 @@
+{
+  "name": "Airflow Container",
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "airflow",
+  "workspaceFolder": "/opt/airflow",
+  "extensions": ["ms-python.python"]
+}
