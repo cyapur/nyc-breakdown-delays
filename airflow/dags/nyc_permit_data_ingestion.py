@@ -24,10 +24,10 @@ dag = DAG(
 
 # Set up the connection details for PostgreSQL
 conn = models.Connection(
-    conn_id='postgres_default',
+    conn_id='postgres_default_2',
     conn_type='postgres',
     host='postgres',
-    schema='airflow',
+    schema='postgres_db',
     login='admin',
     password='admin'
 )
@@ -83,7 +83,7 @@ save_data_postgres = PythonOperator(
 
 create_table = PostgresOperator(
     task_id='create_table',
-    postgres_conn_id='postgres_default',
+    postgres_conn_id='postgres_default_2',
     sql="""
     CREATE TABLE IF NOT EXISTS nyc_bus_data (
         school_year TEXT,

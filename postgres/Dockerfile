@@ -1,5 +1,0 @@
-FROM postgres:15.3
-
-ENV POSTGRES_USER airflow
-ENV POSTGRES_PASSWORD airflow
-ENV POSTGRES_DB airflow

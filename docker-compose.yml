@@ -1,25 +1,40 @@
 version: '3.8'
-
 services:
   postgres:
-      image: postgres:15.3
-      environment:
-        POSTGRES_USER: admin
-        POSTGRES_PASSWORD: admin
-        POSTGRES_DB: postgres_db
+    image: postgres:15.3
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+        - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.com
+        - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+        - "5050:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+      
   airflow:
     build: ./airflow
     command: >
       bash -c "
         airflow db init && 
         airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
-        airflow webserver
+        airflow webserver &&
+        airflow scheduler
       "
     volumes:
       - ./airflow/dags:/opt/airflow/dags
     ports:
       - 8080:8080
-    links:
-      - postgres
     depends_on:
       - postgres
