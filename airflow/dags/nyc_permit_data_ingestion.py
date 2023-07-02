@@ -45,7 +45,7 @@ create_conn = PythonOperator(
 
 def get_bus_data(ti):
     client = Socrata("data.cityofnewyork.us", None)
-    results = client.get("ez4e-fazm", limit=2000)
+    results = client.get("ez4e-fazm", order="occurred_on DESC", limit=30000) #limit=200000)
     ti.xcom_push(key="data", value=results)
 
 def get_pg_table_columns():
@@ -89,9 +89,25 @@ def save_data_to_postgres(ti, **kwargs):
                                    'school_age_or_prek': str, 
                                    'how_long_delayed': str, 
                                    'incident_number': str})
-    print("Dataframe dtypes: ", df.dtypes)
+    print("df.dtypes: ", df.dtypes)
     pg_hook = PostgresHook(postgres_conn_id='postgres_default_2')
-    pg_hook.insert_rows('nyc_bus_data', df.to_dict('records'), target_fields=df.columns.tolist())
+    print('df.head(10).to_records(index=False)', df.head(10).to_records(index=False))
+    pg_hook.insert_rows('nyc_bus_data', df.to_records(index=False), target_fields=df.columns.tolist())
+
+create_view = PostgresOperator(
+    task_id='create_view',
+    postgres_conn_id='postgres_default_2',
+    sql="""
+    CREATE OR REPLACE VIEW count_of_occurrences AS
+    SELECT TO_TIMESTAMP(occurred_on, 'YYYY-MM-DDTHH24:MI:SS.US')::date AS date_occurred,
+    breakdown_or_running_late,
+    COUNT(*)
+    FROM nyc_bus_data
+    WHERE (TO_TIMESTAMP(occurred_on, 'YYYY-MM-DDTHH24:MI:SS.US')::date) >= NOW() - INTERVAL '30 day'
+    GROUP BY 1, breakdown_or_running_late;
+    """,
+    dag=dag,
+)
 
 get_data = PythonOperator(
     task_id="get_bus_data",
@@ -145,4 +161,4 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-create_conn >> get_data >> create_table >> get_columns >> [save_data_csv, save_data_postgres]
+create_conn >> get_data >> create_table >> get_columns >> [save_data_csv, save_data_postgres] >> create_view
