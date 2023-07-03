@@ -67,6 +67,8 @@ The fourth step is visually represented below:
 ## Workflow
 The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily at 12:00 PM. The workflow performs the following steps:
 
+![image](https://github.com/cyapur/nyc-breakdown-delays/assets/37354517/267f7b32-7a82-4acb-8a4b-1063f34be0fa)
+
 1. Create a connection to the PostgreSQL database.
 2. Fetch the NYC bus data from the [data.cityofnewyork.us API](https://data.cityofnewyork.us/Transportation/Bus-Breakdown-and-Delays/ez4e-fazm)
 3. Create a table nyc_bus_data in the PostgreSQL database if it doesn't exist.
