@@ -65,7 +65,7 @@ The fourth step is visually represented below:
 
 
 ## Workflow
-The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily at 12:00 PM. The workflow performs the following steps:
+The data ingestion workflow (nyc_bus_data_ingestion) performs the following steps:
 
 ![Alt text](screenshots/airflow_dag.png)
 
