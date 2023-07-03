@@ -1,2 +1,5 @@
 *.ipynb
-**/*.csv
+pgadmin/
+postgres_data/
+csv data/
+airflow/dags/__pycache__/

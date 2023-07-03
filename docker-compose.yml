@@ -38,7 +38,6 @@ services:
       "
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./csv data:/opt/csv_data
     ports:
       - 8080:8080
     depends_on:

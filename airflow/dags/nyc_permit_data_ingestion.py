@@ -37,36 +37,18 @@ def create_conn_and_var():
     session.add(conn)
     session.commit()
 
-create_conn = PythonOperator(
-    task_id="create_conn",
+create_postgres_conn = PythonOperator(
+    task_id="create_postgres_conn",
     python_callable=create_conn_and_var,
     dag=dag
 )
 
-def get_bus_data(ti):
+def extract_bus_data(ti):
     client = Socrata("data.cityofnewyork.us", None)
-    results = client.get("ez4e-fazm", order="occurred_on DESC", limit=30000) #limit=200000)
+    results = client.get("ez4e-fazm", order="occurred_on DESC", limit=30000)
     ti.xcom_push(key="data", value=results)
 
-def get_pg_table_columns():
-    pg_hook = PostgresHook(postgres_conn_id='postgres_default_2')
-    query = "SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'nyc_bus_data' ORDER BY ordinal_position"
-    result = pg_hook.get_records(query)
-    print(result)
-
-get_columns = PythonOperator(
-    task_id="get_pg_table_columns",
-    python_callable=get_pg_table_columns,
-    dag=dag,
-)
-
-def save_data_to_csv(ti, **kwargs):
-    data = ti.xcom_pull(task_ids='get_bus_data', key='data')
-    df = pd.DataFrame(data)
-    file_name = os.path.join("/opt/csv_data", "nyc_bus_data.csv")
-    df.to_csv(file_name, index=False)
-
-def save_data_to_postgres(ti, **kwargs):
+def load_data_to_postgres(ti, **kwargs):
     data = ti.xcom_pull(task_ids='get_bus_data', key='data')
     df = pd.DataFrame(data).astype({'school_year': str, 
                                    'busbreakdown_id': str, 
@@ -109,29 +91,22 @@ create_view = PostgresOperator(
     dag=dag,
 )
 
-get_data = PythonOperator(
+extract_data = PythonOperator(
     task_id="get_bus_data",
-    python_callable=get_bus_data,
+    python_callable=extract_bus_data,
     provide_context=True,
     dag=dag,
 )
 
-save_data_csv = PythonOperator(
-    task_id="save_data_csv",
-    python_callable=save_data_to_csv,
+load_to_postgres = PythonOperator(
+    task_id="load_to_postgres",
+    python_callable=load_data_to_postgres,
     provide_context=True,
     dag=dag,
 )
 
-save_data_postgres = PythonOperator(
-    task_id="save_data_postgres",
-    python_callable=save_data_to_postgres,
-    provide_context=True,
-    dag=dag,
-)
-
-create_table = PostgresOperator(
-    task_id='create_table',
+create_table_if_not_exist = PostgresOperator(
+    task_id='create_table_if_not_exist',
     postgres_conn_id='postgres_default_2',
     sql="""
     CREATE TABLE IF NOT EXISTS nyc_bus_data (
@@ -161,4 +136,4 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-create_conn >> get_data >> create_table >> get_columns >> [save_data_csv, save_data_postgres] >> create_view
+create_postgres_conn >> extract_data >> create_table_if_not_exist >> load_to_postgres >> create_view
