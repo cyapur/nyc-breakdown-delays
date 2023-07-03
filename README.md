@@ -64,7 +64,7 @@ The fourth step is visually represented below:
 7. Grafana will be updated automatically once the view is created. Also, you can modify the view accessing through pgAdmin4 and Grafana will automatically update the view after a few seconds.
 
 
-## Workflow (DAG)
+## Workflow
 The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily at 12:00 PM. The workflow performs the following steps:
 
 1. Create a connection to the PostgreSQL database.
@@ -72,6 +72,6 @@ The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily a
 3. Create a table nyc_bus_data in the PostgreSQL database if it doesn't exist.
 4. Save the fetched data to the PostgreSQL database.
 5. Create a view in the PostgreSQL database to count the occurrences of bus breakdowns and delays over the past 30 days.
-6. Grafana created a dashboard to view the count_of_occurrences view.
+6. Enables Grafana to create a dashboard to visualize the count_of_occurrences view.
 
 ![Alt text](images/grafana_dashboard.png)
