@@ -1,6 +1,6 @@
 # NYC Bus Data Ingestion Project
 
-This project leverages Docker to build an end-to-end data pipeline for ingesting, processing, and visualizing NYC bus data. The pipeline is implemented as a Directed Acyclic Graph (DAG) using Apache Airflow. Data is stored in a PostgreSQL database and visualized with Grafana.
+This project utilizes Docker to construct an end-to-end data pipeline for ingesting, processing, and visualizing NYC bus data. The pipeline, implemented as a Directed Acyclic Graph (DAG) using Apache Airflow, stores data in a PostgreSQL database and uses Grafana for visualization.
 
 ## Project Structure
 
@@ -14,8 +14,6 @@ This project leverages Docker to build an end-to-end data pipeline for ingesting
 │   ├── provisioning
 │   │   ├── dashboards
 │   │   └── datasources
-├── pgadmin                 # pgAdmin data directory
-├── postgres_data           # PostgreSQL data directory
 └── docker-compose.yml      # Docker Compose file to start services
 ```
 
@@ -58,7 +56,7 @@ airflow scheduler
 
 The fourth step is visually represented below:
 
-![Alt text](image.png)
+![Alt text](images/airflow_scheduler_command.png)
 
 
 5. Log in into airflow interface through http://localhost:8080. Use the credentials `admin:admin` to log in.
@@ -73,9 +71,7 @@ The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily a
 2. Fetch the NYC bus data from the [data.cityofnewyork.us API](https://data.cityofnewyork.us/Transportation/Bus-Breakdown-and-Delays/ez4e-fazm)
 3. Create a table nyc_bus_data in the PostgreSQL database if it doesn't exist.
 4. Save the fetched data to the PostgreSQL database.
-5. Create a view count_of_occurrences in the PostgreSQL database to count the occurrences of bus breakdowns and delays over the past 30 days.
+5. Create a view in the PostgreSQL database to count the occurrences of bus breakdowns and delays over the past 30 days.
 6. Grafana created a dashboard to view the count_of_occurrences view.
-![Alt text](image-1.png)
 
-## Monitoring
-You can monitor the status of the DAG runs and tasks in the Airflow web interface.
+![Alt text](images/grafana_dashboard.png)
