@@ -56,7 +56,7 @@ airflow scheduler
 
 The fourth step is visually represented below:
 
-![Alt text](images/airflow_scheduler_command.png)
+![Alt text](screenshots/airflow_scheduler_command.png)
 
 
 5. Log in into airflow interface through http://localhost:8080. Use the credentials `admin:admin` to log in.
@@ -67,7 +67,7 @@ The fourth step is visually represented below:
 ## Workflow
 The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily at 12:00 PM. The workflow performs the following steps:
 
-![image](https://github.com/cyapur/nyc-breakdown-delays/assets/37354517/267f7b32-7a82-4acb-8a4b-1063f34be0fa)
+![Alt text](screenshots/airflow_dag.png)
 
 1. Create a connection to the PostgreSQL database.
 2. Fetch the NYC bus data from the [data.cityofnewyork.us API](https://data.cityofnewyork.us/Transportation/Bus-Breakdown-and-Delays/ez4e-fazm)
@@ -76,4 +76,4 @@ The data ingestion workflow (nyc_bus_data_ingestion) is scheduled to run daily a
 5. Create a view in the PostgreSQL database to count the occurrences of bus breakdowns and delays over the past 30 days.
 6. Enables Grafana to create a dashboard to visualize the count_of_occurrences view.
 
-![Alt text](images/grafana_dashboard.png)
+![Alt text](screenshots/grafana_dashboard.png)
