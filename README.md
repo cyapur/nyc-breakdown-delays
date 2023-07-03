@@ -12,8 +12,8 @@ This project utilizes Docker to construct an end-to-end data pipeline for ingest
 │       └── nyc_bus_data_ingestion.py
 ├── grafana                 # Grafana configuration
 │   ├── provisioning
-│   │   ├── dashboards
-│   │   └── datasources
+│   │   ├── dashboards      # Dashboard configuration
+│   │   └── datasources     # Data sources configuration
 └── docker-compose.yml      # Docker Compose file to start services
 ```
 
