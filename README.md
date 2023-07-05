@@ -38,11 +38,6 @@ This project utilizes Docker to construct an end-to-end data pipeline for ingest
 
 2. Clone this repository:
 
-```bash
-git clone https://github.com/user/repository.git
-cd repository
-```
-
 3. Build and start services:
 
 ```bash
